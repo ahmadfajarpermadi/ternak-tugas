@@ -298,14 +298,32 @@ function renderDynamicParams() {
 // ============================================
 // DARK MODE
 // ============================================
+function getSavedTheme() {
+  try {
+    return localStorage.getItem('ternak-tugas-theme');
+  } catch (e) {
+    return null;
+  }
+}
+
+function setSavedTheme(theme) {
+  try {
+    localStorage.setItem('ternak-tugas-theme', theme);
+  } catch (e) {
+    // localStorage unavailable
+  }
+}
+
 function initTheme() {
-  const saved = localStorage.getItem('ternak-tugas-theme');
+  const saved = getSavedTheme();
   if (saved === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
     dom.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-  } else {
-    document.documentElement.setAttribute('data-theme', 'light');
+  } else if (saved === 'light') {
     dom.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  } else {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    dom.themeToggle.innerHTML = prefersDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
   }
 }
 
@@ -313,10 +331,20 @@ function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('ternak-tugas-theme', next);
   dom.themeToggle.innerHTML = next === 'dark'
     ? '<i class="fas fa-sun"></i>'
     : '<i class="fas fa-moon"></i>';
+  setSavedTheme(next);
+}
+
+function initThemeListener() {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+    if (!getSavedTheme()) {
+      var theme = e.matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      dom.themeToggle.innerHTML = e.matches ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+  });
 }
 
 // ============================================
@@ -536,6 +564,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderServices();
   initTheme();
+  dom.themeToggle.addEventListener('click', toggleTheme);
+  initThemeListener();
   initRevealObserver();
   initSmoothScroll();
   initFaq();
