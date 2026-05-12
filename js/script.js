@@ -460,7 +460,7 @@ function initFormSubmit() {
       + `Mohon infonya lebih lanjut. Terima kasih!`;
 
     const encoded = encodeURIComponent(message);
-    const waUrl = `https://wa.me/6281234567890?text=${encoded}`;
+    const waUrl = `https://wa.me/62889899839993?text=${encoded}`;
     window.open(waUrl, '_blank');
   });
 }
