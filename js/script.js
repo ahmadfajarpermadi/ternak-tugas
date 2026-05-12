@@ -49,7 +49,7 @@ const services = [
   },
   {
     id: 'paper',
-    name: 'Makalah / Laporan IT',
+    name: 'Video / Laporan IT',
     desc: 'Laporan praktikum, proposal, skripsi bab, literature review IT. Format IEEE/APA.',
     icon: 'fa-file-alt',
     basePrice: 50000,
