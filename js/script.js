@@ -62,20 +62,6 @@ const services = [
     ]
   },
   {
-    id: 'ppt',
-    name: 'PPT Presentasi IT',
-    desc: 'Presentasi menarik dengan diagram, flowchart, arsitektur sistem, dan animasi.',
-    icon: 'fa-file-powerpoint',
-    basePrice: 30000,
-    unit: 'slide',
-    tags: ['Presentasi', 'Diagram', 'Flowchart', 'Arsitektur'],
-    params: [
-      { id: 'quantity', label: 'Jumlah Slide', type: 'number', min: 1, max: 50, default: 10 },
-      { id: 'needDiagram', label: 'Butuh Diagram/Flowchart?', type: 'select', options: ['Tidak', 'Ya, sederhana', 'Ya, detail'] },
-      { id: 'pptTheme', label: 'Tema Presentasi', type: 'select', options: ['Teknologi (Biru)', 'Modern (Dark)', 'Minimalis', 'Korporat', 'Sesuai Request'] }
-    ]
-  },
-  {
     id: 'algorithm',
     name: 'Algoritma & Struktur Data',
     desc: 'Sorting, searching, graph, DP, tree, dan kompleksitas algoritma. Siap pakai.',
