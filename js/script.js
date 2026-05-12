@@ -47,20 +47,51 @@ const services = [
       { id: 'networkType', label: 'Jenis Pekerjaan', type: 'select', options: ['Konfigurasi Cisco', 'Simulasi GNS3', 'Analisis Paket', 'Write-up Keamanan', 'Forensik Digital', 'Laporan Keamanan'] }
     ]
   },
-  {
-    id: 'paper',
-    name: 'Video / Laporan IT',
-    desc: 'Laporan praktikum, proposal, skripsi bab, literature review IT. Format IEEE/APA.',
-    icon: 'fa-file-alt',
-    basePrice: 50000,
-    unit: 'halaman',
-    tags: ['Skripsi', 'Laporan', 'Review', 'IEEE', 'APA'],
-    params: [
-      { id: 'quantity', label: 'Jumlah Halaman', type: 'number', min: 1, max: 100, default: 5 },
-      { id: 'paperType', label: 'Jenis Makalah', type: 'select', options: ['Laporan Praktikum', 'Proposal', 'Bab Skripsi', 'Literature Review', 'Jurnal', 'Dokumentasi IT'] },
-      { id: 'format', label: 'Format Sitasi', type: 'select', options: ['IEEE', 'APA', 'MLA', 'Tidak Ada'] }
-    ]
-  },
+{
+  id: 'video-task',
+  name: 'Pembuatan Tugas Video',
+  desc: 'Jasa pembuatan tugas video presentasi, video pembelajaran, editing tugas kuliah, dokumentasi, dan konten edukasi dengan hasil profesional.',
+  icon: 'fa-video',
+  basePrice: 75000,
+  unit: 'video',
+  tags: ['Editing', 'Presentasi', 'Video Tugas', 'Motion', 'Konten Edukasi'],
+  params: [
+    { 
+      id: 'duration', 
+      label: 'Durasi Video (menit)', 
+      type: 'number', 
+      min: 1, 
+      max: 120, 
+      default: 5 
+    },
+
+    { 
+      id: 'videoType', 
+      label: 'Jenis Video', 
+      type: 'select', 
+      options: [
+        'Video Presentasi',
+        'Video Pembelajaran',
+        'Editing Tugas',
+        'Video Dokumentasi',
+        'Motion Graphic',
+        'Video Seminar'
+      ] 
+    },
+
+    { 
+      id: 'editingLevel', 
+      label: 'Tingkat Editing', 
+      type: 'select', 
+      options: [
+        'Basic',
+        'Standard',
+        'Professional',
+        'Cinematic'
+      ] 
+    }
+  ]
+},
   {
     id: 'algorithm',
     name: 'Algoritma & Struktur Data',
