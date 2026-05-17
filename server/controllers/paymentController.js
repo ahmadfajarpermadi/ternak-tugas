@@ -8,6 +8,7 @@ const {
 
 const ORDERS_PATH = path.join(__dirname, '..', '..', 'orders.json');
 const ADMIN_WHATSAPP = process.env.ADMIN_WHATSAPP || '6288989983993';
+const ALLOWED_PAYMENT_METHODS = new Set(['SP', 'DA', 'OV', 'VC', 'BT']);
 
 function sanitizeText(value, maxLength = 300) {
   return String(value || '')
@@ -32,6 +33,11 @@ function normalizeAmount(value) {
   }
 
   return Math.round(amount);
+}
+
+function normalizePaymentMethod(value) {
+  const method = sanitizeText(value, 4).toUpperCase();
+  return ALLOWED_PAYMENT_METHODS.has(method) ? method : 'SP';
 }
 
 function createOrderId() {
@@ -95,6 +101,7 @@ async function createPayment(req, res) {
       difficulty,
       deadline,
       totalPrice,
+      paymentMethod,
       notes
     } = req.body;
 
@@ -102,6 +109,7 @@ async function createPayment(req, res) {
     const cleanCustomerName = sanitizeText(customerName, 80);
     const cleanPhone = sanitizePhone(customerPhone);
     const cleanServiceType = sanitizeText(serviceType, 120);
+    const cleanPaymentMethod = normalizePaymentMethod(paymentMethod);
 
     if (!cleanCustomerName || !cleanPhone || !cleanServiceType || amount <= 0) {
       return res.status(400).json({
@@ -132,6 +140,7 @@ async function createPayment(req, res) {
         deadline: sanitizeText(deadline, 40),
         notes: sanitizeText(notes, 500)
       },
+      paymentMethod: cleanPaymentMethod,
       amount,
       status: 'PENDING',
       reference: null,
@@ -145,7 +154,7 @@ async function createPayment(req, res) {
       merchantCode,
       paymentAmount: amount,
       merchantOrderId: orderId,
-      paymentMethod: "SP",
+      paymentMethod: cleanPaymentMethod,
       productDetails: `TernakTugas - ${cleanServiceType}`,
       customerVaName: cleanCustomerName,
       email: order.customer.email,

@@ -165,6 +165,11 @@ const dom = {
   email: $('#email'),
   orderForm: $('#orderForm'),
   payNowBtn: $('#payNowBtn'),
+  paymentMethods: $$('.payment-method'),
+  selectedPaymentIcon: $('#selectedPaymentIcon'),
+  selectedPaymentName: $('#selectedPaymentName'),
+  paymentAdminFee: $('#paymentAdminFee'),
+  paymentTotalDisplay: $('#paymentTotalDisplay'),
   basePriceDisplay: $('#basePriceDisplay'),
   diffFactorDisplay: $('#diffFactorDisplay'),
   diffPriceDisplay: $('#diffPriceDisplay'),
@@ -181,7 +186,37 @@ const dom = {
   navbar: $('#navbar'),
 };
 
-const API_BASE_URL = '';
+const API_BASE_URL = 'https://ternak-tugas.up.railway.app';
+
+const paymentMethods = {
+  SP: {
+    name: 'QRIS / ShopeePay',
+    icon: 'QRIS',
+    adminFee: 0
+  },
+  DA: {
+    name: 'DANA',
+    icon: 'DANA',
+    adminFee: 0
+  },
+  OV: {
+    name: 'OVO',
+    icon: 'OVO',
+    adminFee: 0
+  },
+  VC: {
+    name: 'Virtual Account',
+    icon: '<i class="fas fa-building-columns"></i>',
+    adminFee: 0
+  },
+  BT: {
+    name: 'Bank Transfer',
+    icon: '<i class="fas fa-wallet"></i>',
+    adminFee: 0
+  }
+};
+
+let selectedPaymentMethod = 'SP';
 
 // ============================================
 // RENDER SERVICES
@@ -207,6 +242,48 @@ function formatPrice(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
+function getSelectedPayment() {
+  return paymentMethods[selectedPaymentMethod] || paymentMethods.SP;
+}
+
+function updatePaymentSummary(total = calculatePrice()) {
+  const payment = getSelectedPayment();
+  const adminFee = payment.adminFee || 0;
+  const finalTotal = total + adminFee;
+
+  if (dom.selectedPaymentIcon) {
+    dom.selectedPaymentIcon.innerHTML = payment.icon;
+  }
+
+  if (dom.selectedPaymentName) {
+    dom.selectedPaymentName.textContent = payment.name;
+  }
+
+  if (dom.paymentAdminFee) {
+    dom.paymentAdminFee.textContent = `Rp ${formatPrice(adminFee)}`;
+  }
+
+  if (dom.paymentTotalDisplay) {
+    dom.paymentTotalDisplay.textContent = `Rp ${formatPrice(finalTotal)}`;
+  }
+}
+
+function setSelectedPaymentMethod(method) {
+  if (!paymentMethods[method]) {
+    selectedPaymentMethod = 'SP';
+  } else {
+    selectedPaymentMethod = method;
+  }
+
+  dom.paymentMethods.forEach(card => {
+    const isActive = card.dataset.paymentMethod === selectedPaymentMethod;
+    card.classList.toggle('active', isActive);
+    card.setAttribute('aria-checked', isActive ? 'true' : 'false');
+  });
+
+  updatePaymentSummary(calculatePrice());
+}
+
 function getSelectedService() {
   return services.find(s => s.id === dom.serviceType.value) || null;
 }
@@ -220,6 +297,11 @@ function calculatePrice() {
     dom.deadlineFactorDisplay.textContent = '0x';
     dom.deadlinePriceDisplay.textContent = 'Rp 0';
     dom.totalPriceDisplay.textContent = 'Rp 0';
+    if (dom.paymentTotalDisplay) {
+      const adminFee = getSelectedPayment().adminFee || 0;
+      dom.paymentAdminFee.textContent = `Rp ${formatPrice(adminFee)}`;
+      dom.paymentTotalDisplay.textContent = `Rp ${formatPrice(adminFee)}`;
+    }
     return 0;
   }
 
@@ -244,6 +326,11 @@ function calculatePrice() {
   dom.deadlineFactorDisplay.textContent = `${ddlFactor}x`;
   dom.deadlinePriceDisplay.textContent = `Rp ${formatPrice(Math.round(ddlPrice))}`;
   dom.totalPriceDisplay.textContent = `Rp ${formatPrice(Math.round(total))}`;
+  if (dom.paymentTotalDisplay) {
+    const adminFee = getSelectedPayment().adminFee || 0;
+    dom.paymentAdminFee.textContent = `Rp ${formatPrice(adminFee)}`;
+    dom.paymentTotalDisplay.textContent = `Rp ${formatPrice(Math.round(total) + adminFee)}`;
+  }
   return Math.round(total);
 }
 
@@ -275,6 +362,9 @@ function setPaymentLoading(isLoading) {
   if (!dom.payNowBtn) return;
 
   dom.payNowBtn.disabled = isLoading;
+  dom.paymentMethods.forEach(card => {
+    card.disabled = isLoading;
+  });
   dom.payNowBtn.innerHTML = isLoading
     ? '<span class="spinner"></span><span>Memproses Pembayaran...</span>'
     : '<i class="fas fa-credit-card"></i><span>Bayar Sekarang</span>';
@@ -291,6 +381,25 @@ function collectParamDetails(service) {
   });
 
   return details;
+}
+
+function initPaymentMethods() {
+  if (!dom.paymentMethods.length) return;
+
+  dom.paymentMethods.forEach(card => {
+    card.addEventListener('click', () => {
+      setSelectedPaymentMethod(card.dataset.paymentMethod);
+    });
+
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setSelectedPaymentMethod(card.dataset.paymentMethod);
+      }
+    });
+  });
+
+  setSelectedPaymentMethod(selectedPaymentMethod);
 }
 
 // ============================================
@@ -490,6 +599,7 @@ function initFormSubmit() {
     const notes = dom.notes.value.trim();
     const email = dom.email.value.trim();
     const totalPrice = calculatePrice();
+    const paymentMethod = selectedPaymentMethod;
 
     if (!service) {
       showToast('Silakan pilih jenis tugas terlebih dahulu.', 'error');
@@ -520,6 +630,11 @@ function initFormSubmit() {
       return;
     }
 
+    if (!paymentMethods[paymentMethod]) {
+      showToast('Silakan pilih metode pembayaran terlebih dahulu.', 'error');
+      return;
+    }
+
     const payload = {
       customerName: name,
       customerEmail: email,
@@ -528,8 +643,10 @@ function initFormSubmit() {
       difficulty,
       deadline: `${days} hari`,
       totalPrice,
+      paymentMethod,
       notes: JSON.stringify({
         catatan: notes || '-',
+        metodePembayaran: paymentMethods[paymentMethod].name,
         detail: collectParamDetails(service)
       })
     };
@@ -554,7 +671,8 @@ function initFormSubmit() {
         orderId: result.orderId,
         amount: result.amount,
         customerName: name,
-        serviceType: service.name
+        serviceType: service.name,
+        paymentMethod
       }));
 
       showToast('Invoice siap. Mengalihkan ke Duitku...', 'success');
@@ -644,6 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFaq();
   initCopyWa();
   initFormSubmit();
+  initPaymentMethods();
   initCharCount();
   initNavToggle();
   initScrollEvents();
