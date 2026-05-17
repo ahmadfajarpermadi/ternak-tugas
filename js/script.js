@@ -164,6 +164,7 @@ const dom = {
   whatsapp: $('#whatsapp'),
   email: $('#email'),
   orderForm: $('#orderForm'),
+  payNowBtn: $('#payNowBtn'),
   basePriceDisplay: $('#basePriceDisplay'),
   diffFactorDisplay: $('#diffFactorDisplay'),
   diffPriceDisplay: $('#diffPriceDisplay'),
@@ -179,6 +180,8 @@ const dom = {
   scrollTop: $('#scrollTop'),
   navbar: $('#navbar'),
 };
+
+const API_BASE_URL = '';
 
 // ============================================
 // RENDER SERVICES
@@ -217,7 +220,7 @@ function calculatePrice() {
     dom.deadlineFactorDisplay.textContent = '0x';
     dom.deadlinePriceDisplay.textContent = 'Rp 0';
     dom.totalPriceDisplay.textContent = 'Rp 0';
-    return;
+    return 0;
   }
 
   const qtyEl = $('#quantity');
@@ -241,6 +244,53 @@ function calculatePrice() {
   dom.deadlineFactorDisplay.textContent = `${ddlFactor}x`;
   dom.deadlinePriceDisplay.textContent = `Rp ${formatPrice(Math.round(ddlPrice))}`;
   dom.totalPriceDisplay.textContent = `Rp ${formatPrice(Math.round(total))}`;
+  return Math.round(total);
+}
+
+function showToast(message, type = 'info') {
+  let toastRoot = $('#toastRoot');
+  if (!toastRoot) {
+    toastRoot = document.createElement('div');
+    toastRoot.id = 'toastRoot';
+    toastRoot.className = 'toast-root';
+    document.body.appendChild(toastRoot);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.innerHTML = `
+    <i class="fas ${type === 'error' ? 'fa-triangle-exclamation' : type === 'success' ? 'fa-check-circle' : 'fa-circle-info'}"></i>
+    <span>${message}</span>
+  `;
+  toastRoot.appendChild(toast);
+
+  setTimeout(() => toast.classList.add('visible'), 20);
+  setTimeout(() => {
+    toast.classList.remove('visible');
+    setTimeout(() => toast.remove(), 250);
+  }, 3600);
+}
+
+function setPaymentLoading(isLoading) {
+  if (!dom.payNowBtn) return;
+
+  dom.payNowBtn.disabled = isLoading;
+  dom.payNowBtn.innerHTML = isLoading
+    ? '<span class="spinner"></span><span>Memproses Pembayaran...</span>'
+    : '<i class="fas fa-credit-card"></i><span>Bayar Sekarang</span>';
+}
+
+function collectParamDetails(service) {
+  const details = {};
+
+  service.params.forEach(p => {
+    const el = document.getElementById(p.id);
+    if (el) {
+      details[p.label] = el.value;
+    }
+  });
+
+  return details;
 }
 
 // ============================================
@@ -429,7 +479,7 @@ function initCopyWa() {
 // FORM VALIDATION & SUBMIT
 // ============================================
 function initFormSubmit() {
-  dom.orderForm.addEventListener('submit', e => {
+  dom.orderForm.addEventListener('submit', async e => {
     e.preventDefault();
 
     const service = getSelectedService();
@@ -438,58 +488,81 @@ function initFormSubmit() {
     const difficulty = dom.difficulty.options[dom.difficulty.selectedIndex].text;
     const days = dom.deadline.value;
     const notes = dom.notes.value.trim();
+    const email = dom.email.value.trim();
+    const totalPrice = calculatePrice();
 
     if (!service) {
-      alert('Silakan pilih jenis tugas terlebih dahulu!');
+      showToast('Silakan pilih jenis tugas terlebih dahulu.', 'error');
       dom.serviceType.focus();
       return;
     }
 
     if (!name) {
-      alert('Silakan masukkan nama lengkap Anda!');
+      showToast('Silakan masukkan nama lengkap Anda.', 'error');
       dom.name.focus();
       return;
     }
 
     if (!wa) {
-      alert('Silakan masukkan nomor WhatsApp Anda!');
+      showToast('Silakan masukkan nomor WhatsApp Anda.', 'error');
       dom.whatsapp.focus();
       return;
     }
 
     if (wa.length < 10) {
-      alert('Nomor WhatsApp tidak valid!');
+      showToast('Nomor WhatsApp tidak valid.', 'error');
       dom.whatsapp.focus();
       return;
     }
 
-    // Build message
-    let paramDetails = '';
-    if (service) {
-      service.params.forEach(p => {
-        const el = document.getElementById(p.id);
-        if (el) {
-          paramDetails += `- ${p.label}: ${el.value}\n`;
-        }
-      });
+    if (!totalPrice) {
+      showToast('Total pembayaran belum valid.', 'error');
+      return;
     }
 
-    const total = dom.totalPriceDisplay.textContent;
+    const payload = {
+      customerName: name,
+      customerEmail: email,
+      customerPhone: wa,
+      serviceType: service.name,
+      difficulty,
+      deadline: `${days} hari`,
+      totalPrice,
+      notes: JSON.stringify({
+        catatan: notes || '-',
+        detail: collectParamDetails(service)
+      })
+    };
 
-    const message = `Halo Ternak Tugas! Saya ingin pesan jasa *${service.name}*:\n\n`
-      + `*Detail Pemesanan:*\n${paramDetails}`
-      + `- Tingkat Kesulitan: ${difficulty}\n`
-      + `- Deadline: ${days} hari\n`
-      + `- Catatan: ${notes || '-'}\n\n`
-      + `*Estimasi Harga: ${total}*\n\n`
-      + `Nama: ${name}\n`
-      + `WA: ${wa}\n`
-      + `Email: ${dom.email.value.trim() || '-'}\n\n`
-      + `Mohon infonya lebih lanjut. Terima kasih!`;
+    try {
+      setPaymentLoading(true);
+      showToast('Membuat invoice pembayaran...', 'info');
 
-    const encoded = encodeURIComponent(message);
-    const waUrl = `https://wa.me/62889899839993?text=${encoded}`;
-    window.open(waUrl, '_blank');
+      const response = await fetch(`${API_BASE_URL}/api/create-payment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Gagal membuat pembayaran.');
+      }
+
+      localStorage.setItem('ternak-tugas-last-order', JSON.stringify({
+        orderId: result.orderId,
+        amount: result.amount,
+        customerName: name,
+        serviceType: service.name
+      }));
+
+      showToast('Invoice siap. Mengalihkan ke Duitku...', 'success');
+      window.location.href = result.paymentUrl;
+    } catch (error) {
+      showToast(error.message || 'Terjadi kesalahan saat memproses pembayaran.', 'error');
+      setPaymentLoading(false);
+    }
   });
 }
 

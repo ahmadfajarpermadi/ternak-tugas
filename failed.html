@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembayaran Gagal - TernakTugas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="payment-page">
+    <div class="container">
+      <section class="payment-result failed">
+        <div class="result-mark">
+          <i class="fas fa-xmark"></i>
+        </div>
+        <h1>Pembayaran Gagal</h1>
+        <p>Pembayaran belum berhasil diproses. Anda bisa mencoba kembali atau konsultasi langsung melalui WhatsApp admin.</p>
+
+        <div class="payment-details">
+          <div class="payment-detail-row">
+            <span>Status</span>
+            <strong><span class="status-badge failed"><i class="fas fa-circle-xmark"></i> FAILED</span></strong>
+          </div>
+          <div class="payment-detail-row">
+            <span>Order terakhir</span>
+            <strong id="lastOrder">-</strong>
+          </div>
+        </div>
+
+        <div class="payment-actions">
+          <a href="/#order" class="btn btn-primary">
+            <i class="fas fa-rotate-right"></i> Coba Lagi
+          </a>
+          <a href="https://wa.me/6288989983993" class="btn btn-outline">
+            <i class="fab fa-whatsapp"></i> Hubungi Admin
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const fallback = JSON.parse(localStorage.getItem('ternak-tugas-last-order') || '{}');
+    document.getElementById('lastOrder').textContent = fallback.orderId || '-';
+  </script>
+</body>
+</html>

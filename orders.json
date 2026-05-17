@@ -1,0 +1,31 @@
+[
+  {
+    "orderId": "TT-20260517-2O33TJ",
+    "customer": {
+      "name": "Ahmad Fajar Permadi",
+      "email": "tt-20260517-2o33tj@ternaktugas.local",
+      "phone": "088989983993"
+    },
+    "service": {
+      "type": "Coding / Pemrograman",
+      "difficulty": "Mudah",
+      "deadline": "5 hari",
+      "notes": "{\"catatan\":\"-\",\"detail\":{\"Jumlah Modul/Program\":\"1\",\"Bahasa Pemrograman\":\"Python\"}}"
+    },
+    "amount": 100000,
+    "status": "PENDING",
+    "reference": "DS3075726U1KWP4HC0V8KL8K",
+    "duitkuResponse": {
+      "merchantCode": "DS30757",
+      "reference": "DS3075726U1KWP4HC0V8KL8K",
+      "paymentUrl": "https://sandbox.duitku.com/topup/topupdirectv2.aspx?ref=SP260HRWO0G76P2Z6CM",
+      "qrString": "00020101021226610016ID.CO.SHOPEE.WWW01189360091800202688450208202688450303UKE5204798853033605409100000.005802ID5906Duitku6015KAB. BANGKA BAR610533315622205181464273410205096826304A2AC",
+      "amount": "100000",
+      "statusCode": "00",
+      "statusMessage": "SUCCESS"
+    },
+    "createdAt": "2026-05-17T17:45:50.041Z",
+    "expiresAt": "2026-05-17T18:45:50.041Z",
+    "updatedAt": "2026-05-17T17:45:50.041Z"
+  }
+]

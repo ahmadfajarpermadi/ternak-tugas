@@ -1,0 +1,28 @@
+{
+  "name": "ternak-tugas",
+  "version": "1.0.0",
+  "description": "Platform jasa digital TernakTugas dengan integrasi payment gateway Duitku POP.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
+  },
+  "keywords": [
+    "ternaktugas",
+    "duitku",
+    "express",
+    "payment"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembayaran Berhasil - TernakTugas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="payment-page">
+    <div class="container">
+      <section class="payment-result">
+        <div class="result-mark">
+          <i class="fas fa-check"></i>
+        </div>
+        <h1>Pembayaran Berhasil</h1>
+        <p>Terima kasih. Detail order Anda sudah tersimpan dan siap dikirim ke admin TernakTugas.</p>
+
+        <div class="payment-details">
+          <div class="payment-detail-row">
+            <span>Order ID</span>
+            <strong id="orderId">Memuat...</strong>
+          </div>
+          <div class="payment-detail-row">
+            <span>Total Pembayaran</span>
+            <strong id="amount">Memuat...</strong>
+          </div>
+          <div class="payment-detail-row">
+            <span>Status</span>
+            <strong><span class="status-badge paid" id="statusBadge"><i class="fas fa-check-circle"></i> PAID</span></strong>
+          </div>
+        </div>
+
+        <div class="payment-actions">
+          <a href="#" class="btn btn-success" id="whatsappBtn">
+            <i class="fab fa-whatsapp"></i> Kirim Detail ke WhatsApp
+          </a>
+          <a href="/" class="btn btn-outline">
+            <i class="fas fa-house"></i> Kembali
+          </a>
+        </div>
+        <p class="redirect-note" id="redirectNote">Auto redirect ke WhatsApp dalam 8 detik.</p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('orderId') || params.get('merchantOrderId');
+    const fallback = JSON.parse(localStorage.getItem('ternak-tugas-last-order') || '{}');
+    const activeOrderId = orderId || fallback.orderId;
+    const rupiah = (value) => `Rp ${Number(value || 0).toLocaleString('id-ID')}`;
+    const adminFallback = 'https://wa.me/6288989983993';
+
+    function setStatus(status) {
+      const badge = document.getElementById('statusBadge');
+      const normalized = status || 'PENDING';
+      badge.className = `status-badge ${normalized === 'PAID' ? 'paid' : normalized === 'FAILED' ? 'failed' : 'pending'}`;
+      badge.innerHTML = `<i class="fas ${normalized === 'PAID' ? 'fa-check-circle' : normalized === 'FAILED' ? 'fa-circle-xmark' : 'fa-clock'}"></i> ${normalized}`;
+    }
+
+    async function loadOrder() {
+      document.getElementById('orderId').textContent = activeOrderId || '-';
+      document.getElementById('amount').textContent = fallback.amount ? rupiah(fallback.amount) : '-';
+
+      if (!activeOrderId) {
+        document.getElementById('whatsappBtn').href = adminFallback;
+        document.getElementById('redirectNote').textContent = 'Order ID tidak ditemukan di URL.';
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/orders/${encodeURIComponent(activeOrderId)}`);
+        if (!response.ok) throw new Error('Order belum tersedia.');
+        const order = await response.json();
+
+        document.getElementById('orderId').textContent = order.orderId;
+        document.getElementById('amount').textContent = rupiah(order.amount);
+        document.getElementById('whatsappBtn').href = order.whatsappUrl;
+        setStatus(order.status);
+
+        if (order.status === 'PAID') {
+          let seconds = 8;
+          const note = document.getElementById('redirectNote');
+          const timer = setInterval(() => {
+            seconds -= 1;
+            note.textContent = `Auto redirect ke WhatsApp dalam ${seconds} detik.`;
+            if (seconds <= 0) {
+              clearInterval(timer);
+              window.location.href = order.whatsappUrl;
+            }
+          }, 1000);
+        } else {
+          document.getElementById('redirectNote').textContent = 'Status pembayaran sedang diverifikasi oleh Duitku.';
+        }
+      } catch (error) {
+        document.getElementById('whatsappBtn').href = adminFallback;
+        document.getElementById('redirectNote').textContent = error.message;
+      }
+    }
+
+    loadOrder();
+  </script>
+</body>
+</html>

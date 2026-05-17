@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Ternak Tugas - Jasa pengerjaan tugas IT profesional. Coding, database, jaringan, skripsi, dan lainnya.">
+  <meta name="description" content="TernakTugas adalah layanan jasa digital pengerjaan tugas IT profesional dengan support WhatsApp, email, alamat usaha jelas, dan pembayaran aman melalui Duitku.">
   <script>
     (function() {
       try {
@@ -17,12 +17,35 @@
       }
     })();
   </script>
-  <title>Ternak Tugas — Jasa Tugas IT Professional</title>
+  <title>Ternak Tugas - Jasa Tugas IT Professional</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "TernakTugas",
+      "description": "Jasa digital pengerjaan tugas IT profesional dengan dukungan customer support aktif dan pembayaran online.",
+      "url": "http://localhost:3000",
+      "email": "ahmadfajarpermadi@gmail.com",
+      "telephone": "+6288989983993",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Jl. Raya Pilangbangu, Dusun Pilangbangu, Tarokan, Kec. Tarokan",
+        "addressLocality": "Kabupaten Kediri",
+        "addressRegion": "Jawa Timur",
+        "postalCode": "64152",
+        "addressCountry": "ID"
+      },
+      "openingHours": "Mo-Su 08:00-22:00",
+      "sameAs": [
+        "https://wa.me/6288989983993"
+      ]
+    }
+  </script>
 </head>
 <body>
 
@@ -42,6 +65,7 @@
         <li><a href="#how-it-works" class="nav-link">Cara Kerja</a></li>
         <li><a href="#faq" class="nav-link">FAQ</a></li>
         <li><a href="#contact" class="nav-link">Kontak</a></li>
+        <li><a href="#business-info" class="nav-link">Info Usaha</a></li>
         <li>
           <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
             <i class="fas fa-moon"></i>
@@ -181,8 +205,9 @@
               <input type="email" id="email" placeholder="contoh@email.com">
             </div>
 
-            <button type="submit" class="btn btn-primary btn-full">
-              <i class="fab fa-whatsapp"></i> Kirim via WhatsApp
+            <button type="submit" class="btn btn-primary btn-full" id="payNowBtn">
+              <i class="fas fa-credit-card"></i>
+              <span>Bayar Sekarang</span>
             </button>
           </form>
         </div>
@@ -210,7 +235,14 @@
           </div>
           <div class="price-note">
             <i class="fas fa-info-circle"></i>
-            Harga final dapat berubah setelah diskusi dengan tim kami
+            Pembayaran diproses otomatis melalui Duitku sandbox. Link pembayaran aktif 60 menit.
+          </div>
+          <div class="payment-status-card">
+            <div>
+              <span class="status-badge pending"><i class="fas fa-clock"></i> Menunggu Order</span>
+              <p id="paymentCountdown">Siapkan detail tugas Anda untuk membuat invoice otomatis.</p>
+            </div>
+            <i class="fas fa-shield-halved"></i>
           </div>
           <div class="calculator-cta">
             <a href="https://wa.me/6288989983993" target="_blank" class="btn btn-success btn-full" id="waOrderBtn">
@@ -373,6 +405,117 @@
     </div>
   </section>
 
+  <!-- ===== BUSINESS INFO ===== -->
+  <section class="business-info" id="business-info">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Kontak & Informasi Usaha</span>
+        <h2 class="section-title">Informasi Resmi <span class="gradient-text">TernakTugas</span></h2>
+        <p class="section-desc">Detail usaha, alamat, dan kanal support aktif untuk konsultasi dan layanan pelanggan.</p>
+      </div>
+
+      <div class="trust-badges reveal" aria-label="Indikator kepercayaan layanan">
+        <span><i class="fas fa-shield-halved"></i> Secure Payment</span>
+        <span><i class="fas fa-credit-card"></i> Sandbox Duitku Connected</span>
+        <span><i class="fas fa-headset"></i> Customer Support Active</span>
+      </div>
+
+      <div class="business-grid reveal">
+        <div class="business-card business-details-card">
+          <div class="business-card-header">
+            <div class="business-icon"><i class="fas fa-building"></i></div>
+            <div>
+              <span class="eyebrow">Nama Usaha</span>
+              <h3>TernakTugas</h3>
+            </div>
+          </div>
+
+          <div class="business-list">
+            <div class="business-item">
+              <i class="fas fa-location-dot"></i>
+              <div>
+                <span>Alamat</span>
+                <strong>Jl. Raya Pilangbangu, Dusun Pilangbangu, Tarokan, Kec. Tarokan, Kabupaten Kediri, Jawa Timur 64152</strong>
+              </div>
+            </div>
+            <div class="business-item">
+              <i class="fas fa-map"></i>
+              <div>
+                <span>Kota / Provinsi</span>
+                <strong>Kabupaten Kediri, Jawa Timur</strong>
+              </div>
+            </div>
+            <div class="business-item">
+              <i class="fab fa-whatsapp"></i>
+              <div>
+                <span>WhatsApp Support</span>
+                <strong><a href="https://wa.me/6288989983993" target="_blank" rel="noopener">088989983993</a></strong>
+              </div>
+            </div>
+            <div class="business-item">
+              <i class="fas fa-envelope"></i>
+              <div>
+                <span>Email Support</span>
+                <strong><a href="mailto:ahmadfajarpermadi@gmail.com">ahmadfajarpermadi@gmail.com</a></strong>
+              </div>
+            </div>
+            <div class="business-item">
+              <i class="fas fa-clock"></i>
+              <div>
+                <span>Jam Operasional</span>
+                <strong>08.00 - 22.00 WIB</strong>
+              </div>
+            </div>
+            <div class="business-item">
+              <i class="fas fa-signal"></i>
+              <div>
+                <span>Status Layanan</span>
+                <strong><span class="status-badge paid"><i class="fas fa-circle-check"></i> Online setiap hari</span></strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="business-card support-card">
+          <div class="support-icon-large">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h3>Support TernakTugas</h3>
+          <p>Tim support siap membantu konfirmasi order, pembayaran, revisi, dan konsultasi layanan digital setiap hari.</p>
+          <div class="support-points">
+            <span><i class="fab fa-whatsapp"></i> WhatsApp aktif</span>
+            <span><i class="fas fa-envelope"></i> Email support</span>
+            <span><i class="fas fa-location-dot"></i> Alamat usaha jelas</span>
+            <span><i class="fas fa-clock"></i> 08.00 - 22.00 WIB</span>
+          </div>
+          <a href="https://wa.me/6288989983993" target="_blank" rel="noopener" class="btn btn-primary btn-full">
+            <i class="fab fa-whatsapp"></i> Hubungi Support
+          </a>
+        </div>
+
+        <div class="business-card map-card">
+          <div class="map-header">
+            <div>
+              <span class="eyebrow">Lokasi Usaha</span>
+              <h3>Pilangbangu, Tarokan, Kediri</h3>
+            </div>
+            <i class="fas fa-map-location-dot"></i>
+          </div>
+          <div class="map-embed" title="Peta lokasi TernakTugas">
+            <iframe
+              src="https://www.google.com/maps?q=Jl.%20Raya%20Pilangbangu%2C%20Dusun%20Pilangbangu%2C%20Tarokan%2C%20Kec.%20Tarokan%2C%20Kabupaten%20Kediri%2C%20Jawa%20Timur%2064152&output=embed"
+              width="600"
+              height="450"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== FOOTER ===== -->
   <footer class="footer">
     <div class="container">
@@ -412,12 +555,26 @@
           <ul>
             <li><a href="https://wa.me/6288989983993">WhatsApp</a></li>
             <li><a href="mailto:ahmadfajarpermadi@gmail.com">Email</a></li>
+            <li><a href="#business-info">Alamat Usaha</a></li>
             <li><a href="#contact">Jam Operasional</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#business-info">Kebijakan Privasi</a></li>
+            <li><a href="#business-info">Syarat & Ketentuan</a></li>
+            <li><a href="#business-info">Kontak</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Ternak Tugas. All rights reserved.</p>
+        <p>&copy; 2026 TernakTugas. Seluruh layanan tersedia secara online dan didukung customer support aktif.</p>
+        <p class="footer-contact-line">
+          TernakTugas - Jl. Raya Pilangbangu, Dusun Pilangbangu, Tarokan, Kabupaten Kediri, Jawa Timur 64152 -
+          WhatsApp <a href="https://wa.me/6288989983993">088989983993</a> -
+          Email <a href="mailto:ahmadfajarpermadi@gmail.com">ahmadfajarpermadi@gmail.com</a>
+        </p>
       </div>
     </div>
   </footer>
