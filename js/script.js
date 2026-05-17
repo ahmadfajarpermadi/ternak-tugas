@@ -165,10 +165,11 @@ const dom = {
   email: $('#email'),
   orderForm: $('#orderForm'),
   payNowBtn: $('#payNowBtn'),
-  paymentMethods: $$('.payment-method'),
+  paymentMethodGroups: $('#paymentMethodGroups'),
+  paymentMethods: [],
   selectedPaymentIcon: $('#selectedPaymentIcon'),
   selectedPaymentName: $('#selectedPaymentName'),
-  paymentAdminFee: $('#paymentAdminFee'),
+  selectedPaymentCategory: $('#selectedPaymentCategory'),
   paymentTotalDisplay: $('#paymentTotalDisplay'),
   basePriceDisplay: $('#basePriceDisplay'),
   diffFactorDisplay: $('#diffFactorDisplay'),
@@ -189,32 +190,51 @@ const dom = {
 const API_BASE_URL = 'https://ternak-tugas.up.railway.app';
 
 const paymentMethods = {
-  SP: {
-    name: 'QRIS / ShopeePay',
-    icon: 'QRIS',
-    adminFee: 0
-  },
-  DA: {
-    name: 'DANA',
-    icon: 'DANA',
-    adminFee: 0
-  },
-  OV: {
-    name: 'OVO',
-    icon: 'OVO',
-    adminFee: 0
-  },
-  VC: {
-    name: 'Virtual Account',
-    icon: '<i class="fas fa-building-columns"></i>',
-    adminFee: 0
-  },
-  BT: {
-    name: 'Bank Transfer',
-    icon: '<i class="fas fa-wallet"></i>',
-    adminFee: 0
-  }
+  SP: { name: 'ShopeePay QRIS', category: 'QRIS', icon: 'QRIS', badge: 'Recommended', description: 'Scan QR ShopeePay' },
+  NQ: { name: 'Nobu QRIS', category: 'QRIS', icon: 'NQ', badge: 'QRIS', description: 'Scan QR Nobu' },
+  GQ: { name: 'Gudang Voucher QRIS', category: 'QRIS', icon: 'GQ', badge: 'QRIS', description: 'Scan QR Gudang Voucher' },
+  SQ: { name: 'Nusapay QRIS', category: 'QRIS', icon: 'SQ', badge: 'QRIS', description: 'Scan QR Nusapay' },
+  OV: { name: 'OVO', category: 'E-Wallet', icon: 'OVO', badge: 'Wallet', description: 'Bayar via saldo OVO' },
+  DA: { name: 'DANA', category: 'E-Wallet', icon: 'DANA', badge: 'Wallet', description: 'Bayar via saldo DANA' },
+  SA: { name: 'ShopeePay Apps', category: 'E-Wallet', icon: 'SPay', badge: 'Apps', description: 'Buka aplikasi ShopeePay' },
+  LF: { name: 'LinkAja Fixed Fee', category: 'E-Wallet', icon: 'LA', badge: 'Fixed', description: 'Bayar via LinkAja' },
+  LA: { name: 'LinkAja Percentage', category: 'E-Wallet', icon: 'LA', badge: 'Percent', description: 'Bayar via LinkAja' },
+  SL: { name: 'ShopeePay Account Link', category: 'E-Wallet', icon: 'SL', badge: 'Link', description: 'Account link ShopeePay' },
+  OL: { name: 'OVO Account Link', category: 'E-Wallet', icon: 'OL', badge: 'Link', description: 'Account link OVO' },
+  BC: { name: 'BCA VA', category: 'Virtual Account', icon: 'BCA', badge: 'VA', description: 'Virtual account BCA' },
+  M2: { name: 'Mandiri VA', category: 'Virtual Account', icon: 'MDR', badge: 'VA', description: 'Virtual account Mandiri' },
+  VA: { name: 'Maybank VA', category: 'Virtual Account', icon: 'MB', badge: 'VA', description: 'Virtual account Maybank' },
+  I1: { name: 'BNI VA', category: 'Virtual Account', icon: 'BNI', badge: 'VA', description: 'Virtual account BNI' },
+  B1: { name: 'CIMB Niaga VA', category: 'Virtual Account', icon: 'CIMB', badge: 'VA', description: 'Virtual account CIMB' },
+  BT: { name: 'Permata VA', category: 'Virtual Account', icon: 'PMT', badge: 'VA', description: 'Virtual account Permata' },
+  A1: { name: 'ATM Bersama', category: 'Virtual Account', icon: 'ATM', badge: 'VA', description: 'Transfer ATM Bersama' },
+  AG: { name: 'Artha Graha', category: 'Virtual Account', icon: 'AG', badge: 'VA', description: 'Virtual account Artha Graha' },
+  NC: { name: 'Bank Neo Commerce', category: 'Virtual Account', icon: 'NEO', badge: 'VA', description: 'Virtual account Neo Commerce' },
+  BR: { name: 'BRIVA', category: 'Virtual Account', icon: 'BRI', badge: 'VA', description: 'Virtual account BRI' },
+  S1: { name: 'Sahabat Sampoerna', category: 'Virtual Account', icon: 'SS', badge: 'VA', description: 'Virtual account Sampoerna' },
+  DM: { name: 'Danamon VA', category: 'Virtual Account', icon: 'DMN', badge: 'VA', description: 'Virtual account Danamon' },
+  BV: { name: 'BSI VA', category: 'Virtual Account', icon: 'BSI', badge: 'VA', description: 'Virtual account BSI' },
+  FT: { name: 'Pegadaian / ALFA / POS', category: 'Retail', icon: '<i class="fas fa-store"></i>', badge: 'Retail', description: 'Bayar di gerai retail' },
+  IR: { name: 'Indomaret', category: 'Retail', icon: 'IDM', badge: 'Retail', description: 'Bayar di Indomaret' },
+  VC: { name: 'Visa / Mastercard / JCB', category: 'Credit Card', icon: '<i class="fas fa-credit-card"></i>', badge: 'Card', description: 'Kartu kredit internasional' },
+  DN: { name: 'Indodana', category: 'Paylater', icon: 'DN', badge: 'Paylater', description: 'Cicilan Indodana' },
+  AT: { name: 'ATOME', category: 'Paylater', icon: 'AT', badge: 'Paylater', description: 'Bayar nanti dengan ATOME' },
+  JP: { name: 'Jenius Pay', category: 'E-Banking', icon: 'JEN', badge: 'Banking', description: 'Bayar via Jenius Pay' },
+  T1: { name: 'Tokopedia Card', category: 'E-Commerce', icon: 'T1', badge: 'Tokopedia', description: 'Kartu Tokopedia' },
+  T2: { name: 'Tokopedia E-Wallet', category: 'E-Commerce', icon: 'T2', badge: 'Tokopedia', description: 'E-wallet Tokopedia' },
+  T3: { name: 'Tokopedia Others', category: 'E-Commerce', icon: 'T3', badge: 'Tokopedia', description: 'Metode lain Tokopedia' }
 };
+
+const paymentGroups = [
+  { name: 'QRIS', codes: ['SP', 'NQ', 'GQ', 'SQ'] },
+  { name: 'E-Wallet', codes: ['OV', 'DA', 'SA', 'LF', 'LA', 'SL', 'OL'] },
+  { name: 'Virtual Account', codes: ['BC', 'M2', 'VA', 'I1', 'B1', 'BT', 'A1', 'AG', 'NC', 'BR', 'S1', 'DM', 'BV'] },
+  { name: 'Retail', codes: ['FT', 'IR'] },
+  { name: 'Credit Card', codes: ['VC'] },
+  { name: 'Paylater', codes: ['DN', 'AT'] },
+  { name: 'E-Banking', codes: ['JP'] },
+  { name: 'E-Commerce', codes: ['T1', 'T2', 'T3'] }
+];
 
 let selectedPaymentMethod = 'SP';
 
@@ -246,10 +266,40 @@ function getSelectedPayment() {
   return paymentMethods[selectedPaymentMethod] || paymentMethods.SP;
 }
 
+function renderPaymentMethods() {
+  if (!dom.paymentMethodGroups) return;
+
+  dom.paymentMethodGroups.innerHTML = paymentGroups.map(group => `
+    <div class="payment-method-group">
+      <div class="payment-group-title">
+        <span>${group.name}</span>
+        <small>${group.codes.length} metode</small>
+      </div>
+      <div class="payment-method-grid">
+        ${group.codes.map(code => {
+          const method = paymentMethods[code];
+          const isActive = code === selectedPaymentMethod;
+          return `
+            <button type="button" class="payment-method${isActive ? ' active' : ''}" data-payment-method="${code}" role="radio" aria-checked="${isActive ? 'true' : 'false'}">
+              <span class="payment-check"><i class="fas fa-check"></i></span>
+              <span class="payment-icon ${method.category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${method.icon}</span>
+              <span class="payment-copy">
+                <strong>${method.name}</strong>
+                <small>${method.description}</small>
+              </span>
+              <span class="payment-badge ${code === 'SP' ? '' : 'subtle'}">${method.badge}</span>
+            </button>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  dom.paymentMethods = $$('.payment-method', dom.paymentMethodGroups);
+}
+
 function updatePaymentSummary(total = calculatePrice()) {
   const payment = getSelectedPayment();
-  const adminFee = payment.adminFee || 0;
-  const finalTotal = total + adminFee;
 
   if (dom.selectedPaymentIcon) {
     dom.selectedPaymentIcon.innerHTML = payment.icon;
@@ -259,12 +309,12 @@ function updatePaymentSummary(total = calculatePrice()) {
     dom.selectedPaymentName.textContent = payment.name;
   }
 
-  if (dom.paymentAdminFee) {
-    dom.paymentAdminFee.textContent = `Rp ${formatPrice(adminFee)}`;
+  if (dom.selectedPaymentCategory) {
+    dom.selectedPaymentCategory.textContent = payment.category;
   }
 
   if (dom.paymentTotalDisplay) {
-    dom.paymentTotalDisplay.textContent = `Rp ${formatPrice(finalTotal)}`;
+    dom.paymentTotalDisplay.textContent = `Rp ${formatPrice(total)}`;
   }
 }
 
@@ -298,9 +348,7 @@ function calculatePrice() {
     dom.deadlinePriceDisplay.textContent = 'Rp 0';
     dom.totalPriceDisplay.textContent = 'Rp 0';
     if (dom.paymentTotalDisplay) {
-      const adminFee = getSelectedPayment().adminFee || 0;
-      dom.paymentAdminFee.textContent = `Rp ${formatPrice(adminFee)}`;
-      dom.paymentTotalDisplay.textContent = `Rp ${formatPrice(adminFee)}`;
+      dom.paymentTotalDisplay.textContent = 'Rp 0';
     }
     return 0;
   }
@@ -327,9 +375,7 @@ function calculatePrice() {
   dom.deadlinePriceDisplay.textContent = `Rp ${formatPrice(Math.round(ddlPrice))}`;
   dom.totalPriceDisplay.textContent = `Rp ${formatPrice(Math.round(total))}`;
   if (dom.paymentTotalDisplay) {
-    const adminFee = getSelectedPayment().adminFee || 0;
-    dom.paymentAdminFee.textContent = `Rp ${formatPrice(adminFee)}`;
-    dom.paymentTotalDisplay.textContent = `Rp ${formatPrice(Math.round(total) + adminFee)}`;
+    dom.paymentTotalDisplay.textContent = `Rp ${formatPrice(Math.round(total))}`;
   }
   return Math.round(total);
 }
@@ -384,6 +430,8 @@ function collectParamDetails(service) {
 }
 
 function initPaymentMethods() {
+  renderPaymentMethods();
+
   if (!dom.paymentMethods.length) return;
 
   dom.paymentMethods.forEach(card => {
@@ -647,6 +695,7 @@ function initFormSubmit() {
       notes: JSON.stringify({
         catatan: notes || '-',
         metodePembayaran: paymentMethods[paymentMethod].name,
+        kategoriPembayaran: paymentMethods[paymentMethod].category,
         detail: collectParamDetails(service)
       })
     };

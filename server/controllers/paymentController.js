@@ -8,7 +8,16 @@ const {
 
 const ORDERS_PATH = path.join(__dirname, '..', '..', 'orders.json');
 const ADMIN_WHATSAPP = process.env.ADMIN_WHATSAPP || '6288989983993';
-const ALLOWED_PAYMENT_METHODS = new Set(['SP', 'DA', 'OV', 'VC', 'BT']);
+const ALLOWED_PAYMENT_METHODS = new Set([
+  'SP', 'NQ', 'GQ', 'SQ',
+  'OV', 'DA', 'SA', 'LF', 'LA', 'SL', 'OL',
+  'BC', 'M2', 'VA', 'I1', 'B1', 'BT', 'A1', 'AG', 'NC', 'BR', 'S1', 'DM', 'BV',
+  'FT', 'IR',
+  'VC',
+  'DN', 'AT',
+  'JP',
+  'T1', 'T2', 'T3'
+]);
 
 function sanitizeText(value, maxLength = 300) {
   return String(value || '')
@@ -37,7 +46,7 @@ function normalizeAmount(value) {
 
 function normalizePaymentMethod(value) {
   const method = sanitizeText(value, 4).toUpperCase();
-  return ALLOWED_PAYMENT_METHODS.has(method) ? method : 'SP';
+  return ALLOWED_PAYMENT_METHODS.has(method) ? method : null;
 }
 
 function createOrderId() {
@@ -114,6 +123,12 @@ async function createPayment(req, res) {
     if (!cleanCustomerName || !cleanPhone || !cleanServiceType || amount <= 0) {
       return res.status(400).json({
         message: 'Data order belum lengkap atau total pembayaran tidak valid.'
+      });
+    }
+
+    if (!cleanPaymentMethod) {
+      return res.status(400).json({
+        message: 'Metode pembayaran tidak valid.'
       });
     }
 

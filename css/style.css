@@ -682,7 +682,7 @@ textarea { resize: vertical; }
 }
 
 .payment-selector-header,
-.payment-method-grid,
+.payment-method-groups,
 .payment-summary-mini {
   position: relative;
   z-index: 1;
@@ -730,20 +730,46 @@ textarea { resize: vertical; }
   border: 1px solid rgba(0, 217, 166, 0.28);
 }
 
+.payment-method-groups {
+  display: grid;
+  gap: 1rem;
+}
+
+.payment-method-group {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.payment-group-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.payment-group-title small {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
 .payment-method-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
 }
 
 .payment-method {
   position: relative;
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  gap: 0.7rem;
-  align-items: center;
-  min-height: 94px;
-  padding: 0.9rem;
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+  align-content: start;
+  min-height: 132px;
+  padding: 0.76rem;
   border: 1px solid rgba(14, 165, 233, 0.16);
   border-radius: var(--radius-md);
   background:
@@ -838,28 +864,38 @@ textarea { resize: vertical; }
 }
 
 .payment-icon {
-  width: 44px;
-  height: 44px;
-  font-size: 1.05rem;
+  width: 42px;
+  height: 42px;
+  font-size: 0.72rem;
   font-weight: 900;
 }
 
-.payment-icon.qris-logo {
-  font-size: 0.68rem;
-  letter-spacing: 0;
-}
-
-.payment-icon.brand-dana,
-.payment-icon.brand-ovo {
-  font-size: 0.68rem;
-  letter-spacing: 0;
-}
-
-.payment-icon.brand-dana {
+.payment-icon.e-wallet {
   background: linear-gradient(135deg, #118eea, #4fd1ff);
 }
 
-.payment-icon.brand-ovo {
+.payment-icon.virtual-account {
+  background: linear-gradient(135deg, #0f766e, #00d9a6);
+}
+
+.payment-icon.retail {
+  background: linear-gradient(135deg, #f97316, #facc15);
+  color: #1a1a2e;
+}
+
+.payment-icon.credit-card {
+  background: linear-gradient(135deg, #4c1d95, #8b5cf6);
+}
+
+.payment-icon.paylater {
+  background: linear-gradient(135deg, #db2777, #22d3ee);
+}
+
+.payment-icon.e-banking {
+  background: linear-gradient(135deg, #0369a1, #06b6d4);
+}
+
+.payment-icon.e-commerce {
   background: linear-gradient(135deg, #4c1d95, #8b5cf6);
 }
 
@@ -870,13 +906,14 @@ textarea { resize: vertical; }
 }
 
 .payment-copy strong {
-  font-size: 0.86rem;
+  font-size: 0.78rem;
   line-height: 1.25;
+  padding-right: 1rem;
 }
 
 .payment-copy small {
   color: var(--text-secondary);
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   line-height: 1.35;
 }
 
@@ -931,6 +968,18 @@ textarea { resize: vertical; }
 .payment-summary-mini strong {
   color: var(--text-primary);
   font-size: 0.86rem;
+}
+
+.payment-summary-category {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 0.24rem;
+  padding: 0.16rem 0.42rem;
+  border-radius: 999px;
+  color: var(--accent-cyan);
+  background: rgba(0, 217, 166, 0.12);
+  font-size: 0.68rem;
+  font-weight: 800;
 }
 
 .payment-summary-lines {
@@ -2033,6 +2082,10 @@ body.light-mode .business-info .btn-primary:hover {
   .business-details-card {
     grid-row: auto;
   }
+
+  .payment-method-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
@@ -2078,6 +2131,10 @@ body.light-mode .business-info .btn-primary:hover {
 
   .payment-summary-mini {
     grid-template-columns: 1fr;
+  }
+
+  .payment-method-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .steps-grid {
@@ -2143,6 +2200,12 @@ body.light-mode .business-info .btn-primary:hover {
 
   .stat-number {
     font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .payment-method-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
