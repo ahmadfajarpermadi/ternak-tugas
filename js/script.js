@@ -165,12 +165,15 @@ const dom = {
   email: $('#email'),
   orderForm: $('#orderForm'),
   payNowBtn: $('#payNowBtn'),
+  paymentTabs: $('#paymentTabs'),
   paymentMethodGroups: $('#paymentMethodGroups'),
   paymentMethods: [],
   selectedPaymentIcon: $('#selectedPaymentIcon'),
   selectedPaymentName: $('#selectedPaymentName'),
   selectedPaymentCategory: $('#selectedPaymentCategory'),
   paymentTotalDisplay: $('#paymentTotalDisplay'),
+  paymentAdminFeeDisplay: $('#paymentAdminFeeDisplay'),
+  paymentSummaryStatus: $('#paymentSummaryStatus'),
   basePriceDisplay: $('#basePriceDisplay'),
   diffFactorDisplay: $('#diffFactorDisplay'),
   diffPriceDisplay: $('#diffPriceDisplay'),
@@ -190,35 +193,35 @@ const dom = {
 const API_BASE_URL = 'https://ternak-tugas.up.railway.app';
 
 const paymentMethods = {
-  SP: { name: 'ShopeePay QRIS', category: 'QRIS', icon: 'QRIS', badge: 'Recommended', description: 'Scan QR ShopeePay' },
-  NQ: { name: 'Nobu QRIS', category: 'QRIS', icon: 'NQ', badge: 'QRIS', description: 'Scan QR Nobu' },
-  GQ: { name: 'Gudang Voucher QRIS', category: 'QRIS', icon: 'GQ', badge: 'QRIS', description: 'Scan QR Gudang Voucher' },
-  SQ: { name: 'Nusapay QRIS', category: 'QRIS', icon: 'SQ', badge: 'QRIS', description: 'Scan QR Nusapay' },
-  OV: { name: 'OVO', category: 'E-Wallet', icon: 'OVO', badge: 'Wallet', description: 'Bayar via saldo OVO' },
-  DA: { name: 'DANA', category: 'E-Wallet', icon: 'DANA', badge: 'Wallet', description: 'Bayar via saldo DANA' },
-  SA: { name: 'ShopeePay Apps', category: 'E-Wallet', icon: 'SPay', badge: 'Apps', description: 'Buka aplikasi ShopeePay' },
-  LF: { name: 'LinkAja Fixed Fee', category: 'E-Wallet', icon: 'LA', badge: 'Fixed', description: 'Bayar via LinkAja' },
-  LA: { name: 'LinkAja Percentage', category: 'E-Wallet', icon: 'LA', badge: 'Percent', description: 'Bayar via LinkAja' },
-  SL: { name: 'ShopeePay Account Link', category: 'E-Wallet', icon: 'SL', badge: 'Link', description: 'Account link ShopeePay' },
-  OL: { name: 'OVO Account Link', category: 'E-Wallet', icon: 'OL', badge: 'Link', description: 'Account link OVO' },
-  BC: { name: 'BCA VA', category: 'Virtual Account', icon: 'BCA', badge: 'VA', description: 'Virtual account BCA' },
-  M2: { name: 'Mandiri VA', category: 'Virtual Account', icon: 'MDR', badge: 'VA', description: 'Virtual account Mandiri' },
-  VA: { name: 'Maybank VA', category: 'Virtual Account', icon: 'MB', badge: 'VA', description: 'Virtual account Maybank' },
-  I1: { name: 'BNI VA', category: 'Virtual Account', icon: 'BNI', badge: 'VA', description: 'Virtual account BNI' },
-  B1: { name: 'CIMB Niaga VA', category: 'Virtual Account', icon: 'CIMB', badge: 'VA', description: 'Virtual account CIMB' },
-  BT: { name: 'Permata VA', category: 'Virtual Account', icon: 'PMT', badge: 'VA', description: 'Virtual account Permata' },
-  A1: { name: 'ATM Bersama', category: 'Virtual Account', icon: 'ATM', badge: 'VA', description: 'Transfer ATM Bersama' },
-  AG: { name: 'Artha Graha', category: 'Virtual Account', icon: 'AG', badge: 'VA', description: 'Virtual account Artha Graha' },
-  NC: { name: 'Bank Neo Commerce', category: 'Virtual Account', icon: 'NEO', badge: 'VA', description: 'Virtual account Neo Commerce' },
-  BR: { name: 'BRIVA', category: 'Virtual Account', icon: 'BRI', badge: 'VA', description: 'Virtual account BRI' },
-  S1: { name: 'Sahabat Sampoerna', category: 'Virtual Account', icon: 'SS', badge: 'VA', description: 'Virtual account Sampoerna' },
-  DM: { name: 'Danamon VA', category: 'Virtual Account', icon: 'DMN', badge: 'VA', description: 'Virtual account Danamon' },
-  BV: { name: 'BSI VA', category: 'Virtual Account', icon: 'BSI', badge: 'VA', description: 'Virtual account BSI' },
-  FT: { name: 'Pegadaian / ALFA / POS', category: 'Retail', icon: '<i class="fas fa-store"></i>', badge: 'Retail', description: 'Bayar di gerai retail' },
-  IR: { name: 'Indomaret', category: 'Retail', icon: 'IDM', badge: 'Retail', description: 'Bayar di Indomaret' },
-  VC: { name: 'Visa / Mastercard / JCB', category: 'Credit Card', icon: '<i class="fas fa-credit-card"></i>', badge: 'Card', description: 'Kartu kredit internasional' },
-  DN: { name: 'Indodana', category: 'Paylater', icon: 'DN', badge: 'Paylater', description: 'Cicilan Indodana' },
-  AT: { name: 'ATOME', category: 'Paylater', icon: 'AT', badge: 'Paylater', description: 'Bayar nanti dengan ATOME' },
+  SP: { name: 'ShopeePay QRIS', category: 'QRIS', icon: 'QRIS', badge: 'Recommended', description: 'Scan dan bayar instan', fee: 'Mulai Rp 0' },
+  NQ: { name: 'Nobu QRIS', category: 'QRIS', icon: 'QR', badge: 'QRIS', description: 'Scan QR Nobu', fee: 'Sesuai kanal' },
+  GQ: { name: 'Gudang Voucher QRIS', category: 'QRIS', icon: 'GV', badge: 'QRIS', description: 'Scan QR merchant', fee: 'Sesuai kanal' },
+  SQ: { name: 'Nusapay QRIS', category: 'QRIS', icon: 'NP', badge: 'QRIS', description: 'Pembayaran QR cepat', fee: 'Sesuai kanal' },
+  OV: { name: 'OVO', category: 'E-Wallet', icon: 'OVO', badge: 'Wallet', description: 'Bayar via saldo OVO', fee: 'Sesuai kanal' },
+  DA: { name: 'DANA', category: 'E-Wallet', icon: 'DANA', badge: 'Wallet', description: 'Bayar via saldo DANA', fee: 'Sesuai kanal' },
+  SA: { name: 'ShopeePay Apps', category: 'E-Wallet', icon: 'SPay', badge: 'Apps', description: 'Buka aplikasi ShopeePay', fee: 'Sesuai kanal' },
+  LF: { name: 'LinkAja Fixed Fee', category: 'E-Wallet', icon: 'LA', badge: 'Fixed', description: 'Bayar via LinkAja', fee: 'Fixed fee' },
+  LA: { name: 'LinkAja Percentage', category: 'E-Wallet', icon: 'LA', badge: 'Percent', description: 'Bayar via LinkAja', fee: 'Persentase' },
+  SL: { name: 'ShopeePay Account Link', category: 'E-Wallet', icon: 'SL', badge: 'Link', description: 'Account link ShopeePay', fee: 'Sesuai kanal' },
+  OL: { name: 'OVO Account Link', category: 'E-Wallet', icon: 'OL', badge: 'Link', description: 'Account link OVO', fee: 'Sesuai kanal' },
+  BC: { name: 'BCA VA', category: 'Virtual Account', icon: 'BCA', badge: 'VA', description: 'Virtual account BCA', fee: 'Sesuai bank' },
+  M2: { name: 'Mandiri VA', category: 'Virtual Account', icon: 'MDR', badge: 'VA', description: 'Virtual account Mandiri', fee: 'Sesuai bank' },
+  VA: { name: 'Maybank VA', category: 'Virtual Account', icon: 'MYB', badge: 'VA', description: 'Virtual account Maybank', fee: 'Sesuai bank' },
+  I1: { name: 'BNI VA', category: 'Virtual Account', icon: 'BNI', badge: 'VA', description: 'Virtual account BNI', fee: 'Sesuai bank' },
+  B1: { name: 'CIMB Niaga VA', category: 'Virtual Account', icon: 'CIMB', badge: 'VA', description: 'Virtual account CIMB', fee: 'Sesuai bank' },
+  BT: { name: 'Permata VA', category: 'Virtual Account', icon: 'PMT', badge: 'VA', description: 'Virtual account Permata', fee: 'Sesuai bank' },
+  A1: { name: 'ATM Bersama', category: 'Virtual Account', icon: 'ATM', badge: 'VA', description: 'Transfer ATM Bersama', fee: 'Sesuai bank' },
+  AG: { name: 'Artha Graha', category: 'Virtual Account', icon: 'AG', badge: 'VA', description: 'Virtual account Artha Graha', fee: 'Sesuai bank' },
+  NC: { name: 'Bank Neo Commerce', category: 'Virtual Account', icon: 'NEO', badge: 'VA', description: 'Virtual account Neo Commerce', fee: 'Sesuai bank' },
+  BR: { name: 'BRIVA', category: 'Virtual Account', icon: 'BRI', badge: 'VA', description: 'Virtual account BRI', fee: 'Sesuai bank' },
+  S1: { name: 'Sahabat Sampoerna', category: 'Virtual Account', icon: 'SS', badge: 'VA', description: 'Virtual account Sampoerna', fee: 'Sesuai bank' },
+  DM: { name: 'Danamon VA', category: 'Virtual Account', icon: 'DMN', badge: 'VA', description: 'Virtual account Danamon', fee: 'Sesuai bank' },
+  BV: { name: 'BSI VA', category: 'Virtual Account', icon: 'BSI', badge: 'VA', description: 'Virtual account BSI', fee: 'Sesuai bank' },
+  FT: { name: 'Pegadaian / ALFA / POS', category: 'Retail', icon: '<i class="fas fa-store"></i>', badge: 'Retail', description: 'Bayar di gerai retail', fee: 'Sesuai gerai' },
+  IR: { name: 'Indomaret', category: 'Retail', icon: 'IDM', badge: 'Retail', description: 'Bayar di Indomaret', fee: 'Sesuai gerai' },
+  VC: { name: 'Visa / Mastercard / JCB', category: 'Credit Card', icon: '<i class="fas fa-credit-card"></i>', badge: 'Card', description: 'Kartu kredit internasional', fee: 'Sesuai kartu' },
+  DN: { name: 'Indodana', category: 'Paylater', icon: 'DN', badge: 'Paylater', description: 'Cicilan Indodana', fee: 'Sesuai tenor' },
+  AT: { name: 'ATOME', category: 'Paylater', icon: 'AT', badge: 'Paylater', description: 'Bayar nanti dengan ATOME', fee: 'Sesuai tenor' },
   JP: { name: 'Jenius Pay', category: 'E-Banking', icon: 'JEN', badge: 'Banking', description: 'Bayar via Jenius Pay' },
   T1: { name: 'Tokopedia Card', category: 'E-Commerce', icon: 'T1', badge: 'Tokopedia', description: 'Kartu Tokopedia' },
   T2: { name: 'Tokopedia E-Wallet', category: 'E-Commerce', icon: 'T2', badge: 'Tokopedia', description: 'E-wallet Tokopedia' },
@@ -231,12 +234,11 @@ const paymentGroups = [
   { name: 'Virtual Account', codes: ['BC', 'M2', 'VA', 'I1', 'B1', 'BT', 'A1', 'AG', 'NC', 'BR', 'S1', 'DM', 'BV'] },
   { name: 'Retail', codes: ['FT', 'IR'] },
   { name: 'Credit Card', codes: ['VC'] },
-  { name: 'Paylater', codes: ['DN', 'AT'] },
-  { name: 'E-Banking', codes: ['JP'] },
-  { name: 'E-Commerce', codes: ['T1', 'T2', 'T3'] }
+  { name: 'Paylater', codes: ['DN', 'AT'] }
 ];
 
 let selectedPaymentMethod = 'SP';
+let activePaymentCategory = 'QRIS';
 
 // ============================================
 // RENDER SERVICES
@@ -266,14 +268,33 @@ function getSelectedPayment() {
   return paymentMethods[selectedPaymentMethod] || paymentMethods.SP;
 }
 
+function categorySlug(category) {
+  return category.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+}
+
+function renderPaymentTabs() {
+  if (!dom.paymentTabs) return;
+
+  dom.paymentTabs.innerHTML = paymentGroups.map(group => {
+    const isActive = group.name === activePaymentCategory;
+    return `
+      <button type="button" class="payment-tab${isActive ? ' active' : ''}" data-payment-category="${group.name}" role="tab" aria-selected="${isActive ? 'true' : 'false'}">
+        <span>${group.name}</span>
+        <small>${group.codes.length}</small>
+      </button>
+    `;
+  }).join('');
+}
+
 function renderPaymentMethods() {
   if (!dom.paymentMethodGroups) return;
 
-  dom.paymentMethodGroups.innerHTML = paymentGroups.map(group => `
-    <div class="payment-method-group">
+  const group = paymentGroups.find(item => item.name === activePaymentCategory) || paymentGroups[0];
+  dom.paymentMethodGroups.innerHTML = `
+    <div class="payment-method-group active" data-payment-panel="${group.name}">
       <div class="payment-group-title">
         <span>${group.name}</span>
-        <small>${group.codes.length} metode</small>
+        <small>${group.codes.length} metode tersedia</small>
       </div>
       <div class="payment-method-grid">
         ${group.codes.map(code => {
@@ -282,20 +303,77 @@ function renderPaymentMethods() {
           return `
             <button type="button" class="payment-method${isActive ? ' active' : ''}" data-payment-method="${code}" role="radio" aria-checked="${isActive ? 'true' : 'false'}">
               <span class="payment-check"><i class="fas fa-check"></i></span>
-              <span class="payment-icon ${method.category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${method.icon}</span>
+              <span class="payment-icon ${categorySlug(method.category)}">${method.icon}</span>
               <span class="payment-copy">
                 <strong>${method.name}</strong>
                 <small>${method.description}</small>
               </span>
-              <span class="payment-badge ${code === 'SP' ? '' : 'subtle'}">${method.badge}</span>
+              <span class="payment-meta">
+                <span class="payment-badge ${code === 'SP' ? '' : 'subtle'}">${method.badge}</span>
+                <span class="payment-instant"><i class="fas fa-bolt"></i> Instant</span>
+              </span>
+              <span class="payment-fee">${method.fee || 'Sesuai kanal'}</span>
             </button>
           `;
         }).join('')}
       </div>
     </div>
-  `).join('');
+  `;
 
   dom.paymentMethods = $$('.payment-method', dom.paymentMethodGroups);
+}
+
+function bindPaymentCards() {
+  dom.paymentMethods.forEach(card => {
+    card.addEventListener('click', event => {
+      const ripple = document.createElement('span');
+      const rect = card.getBoundingClientRect();
+      ripple.className = 'payment-ripple';
+      ripple.style.left = `${event.clientX - rect.left}px`;
+      ripple.style.top = `${event.clientY - rect.top}px`;
+      card.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 620);
+      setSelectedPaymentMethod(card.dataset.paymentMethod);
+    });
+
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setSelectedPaymentMethod(card.dataset.paymentMethod);
+      }
+    });
+  });
+}
+
+function bindPaymentTabs() {
+  if (!dom.paymentTabs) return;
+
+  const tabs = $$('.payment-tab', dom.paymentTabs);
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => {
+      activePaymentCategory = tab.dataset.paymentCategory;
+      const group = paymentGroups.find(item => item.name === activePaymentCategory);
+      if (group && !group.codes.includes(selectedPaymentMethod)) {
+        selectedPaymentMethod = group.codes[0];
+      }
+      renderPaymentTabs();
+      renderPaymentMethods();
+      bindPaymentTabs();
+      bindPaymentCards();
+      setSelectedPaymentMethod(selectedPaymentMethod);
+    });
+
+    tab.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+
+      event.preventDefault();
+      const direction = event.key === 'ArrowRight' ? 1 : -1;
+      const nextIndex = (index + direction + tabs.length) % tabs.length;
+      tabs[nextIndex].focus();
+      tabs[nextIndex].click();
+    });
+  });
 }
 
 function updatePaymentSummary(total = calculatePrice()) {
@@ -315,6 +393,14 @@ function updatePaymentSummary(total = calculatePrice()) {
 
   if (dom.paymentTotalDisplay) {
     dom.paymentTotalDisplay.textContent = `Rp ${formatPrice(total)}`;
+  }
+
+  if (dom.paymentAdminFeeDisplay) {
+    dom.paymentAdminFeeDisplay.textContent = payment.fee || 'Sesuai kanal';
+  }
+
+  if (dom.paymentSummaryStatus) {
+    dom.paymentSummaryStatus.textContent = `${payment.category} aktif`;
   }
 }
 
@@ -413,7 +499,7 @@ function setPaymentLoading(isLoading) {
   });
   dom.payNowBtn.innerHTML = isLoading
     ? '<span class="spinner"></span><span>Memproses Pembayaran...</span>'
-    : '<i class="fas fa-credit-card"></i><span>Bayar Sekarang</span>';
+    : '<i class="fas fa-lock"></i><span>Bayar Sekarang</span>';
 }
 
 function collectParamDetails(service) {
@@ -430,22 +516,13 @@ function collectParamDetails(service) {
 }
 
 function initPaymentMethods() {
+  renderPaymentTabs();
   renderPaymentMethods();
 
   if (!dom.paymentMethods.length) return;
 
-  dom.paymentMethods.forEach(card => {
-    card.addEventListener('click', () => {
-      setSelectedPaymentMethod(card.dataset.paymentMethod);
-    });
-
-    card.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        setSelectedPaymentMethod(card.dataset.paymentMethod);
-      }
-    });
-  });
+  bindPaymentTabs();
+  bindPaymentCards();
 
   setSelectedPaymentMethod(selectedPaymentMethod);
 }

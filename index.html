@@ -20,7 +20,7 @@
   <title>Ternak Tugas - Jasa Tugas IT Professional</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <script type="application/ld+json">
@@ -210,13 +210,20 @@
                 <div>
                   <span class="payment-eyebrow">Checkout Aman</span>
                   <h4 id="paymentMethodTitle">Pilih Metode Pembayaran</h4>
+                  <p>Pilih metode pembayaran yang paling nyaman untuk Anda.</p>
                 </div>
-                <span class="payment-secure-badge"><i class="fas fa-shield-halved"></i> Duitku</span>
+                <span class="payment-secure-badge"><i class="fas fa-shield-halved"></i> Secure by Duitku</span>
               </div>
 
+              <div class="payment-tabs" id="paymentTabs" role="tablist" aria-label="Kategori metode pembayaran"></div>
               <div class="payment-method-groups" id="paymentMethodGroups" role="radiogroup" aria-label="Pilih metode pembayaran"></div>
 
               <div class="payment-summary-mini" aria-live="polite">
+                <div class="summary-orbit" aria-hidden="true"></div>
+                <div class="payment-summary-top">
+                  <span><i class="fas fa-lock"></i> Secure payment</span>
+                  <strong id="paymentSummaryStatus">Siap checkout</strong>
+                </div>
                 <div class="payment-summary-method">
                   <span id="selectedPaymentIcon" class="payment-summary-icon">QRIS</span>
                   <div>
@@ -230,12 +237,16 @@
                     <span>Total pembayaran</span>
                     <strong id="paymentTotalDisplay">Rp 0</strong>
                   </div>
+                  <div>
+                    <span>Biaya admin</span>
+                    <strong id="paymentAdminFeeDisplay">Sesuai kanal</strong>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-full" id="payNowBtn">
-              <i class="fas fa-credit-card"></i>
+            <button type="submit" class="btn btn-primary btn-full payment-submit-btn" id="payNowBtn">
+              <i class="fas fa-lock"></i>
               <span>Bayar Sekarang</span>
             </button>
           </form>
